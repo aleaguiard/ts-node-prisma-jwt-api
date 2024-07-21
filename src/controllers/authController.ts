@@ -17,7 +17,7 @@ export const register = async (req: Request, res: Response): Promise<void> => {
 	try {
 		const hashedPassword = await hashPassword(password);
 
-		const user = await prisma.create({
+		const user = await prisma.user.create({
 			data: {
 				email,
 				password: hashedPassword,
@@ -47,7 +47,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
 	const { email, password } = parseResult.data;
 
 	try {
-		const user = await prisma.findUnique({ where: { email } });
+		const user = await prisma.user.findUnique({ where: { email } });
 		if (!user) {
 			res.status(404).json({ error: 'User not found' });
 			return;

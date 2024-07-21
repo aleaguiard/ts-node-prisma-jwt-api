@@ -15,7 +15,7 @@ export const createUser = async (req: Request, res: Response): Promise<void> => 
 
 	try {
 		const hashedPassword = await hashPassword(password);
-		const user = await prisma.create({
+		const user = await prisma.user.create({
 			data: {
 				email,
 				password: hashedPassword,
@@ -33,7 +33,7 @@ export const createUser = async (req: Request, res: Response): Promise<void> => 
 
 export const getAllUsers = async (req: Request, res: Response): Promise<void> => {
 	try {
-		const users = await prisma.findMany();
+		const users = await prisma.user.findMany();
 		res.status(200).json(users);
 	} catch (error: any) {
 		console.log(error);
@@ -44,7 +44,7 @@ export const getAllUsers = async (req: Request, res: Response): Promise<void> =>
 export const getUserById = async (req: Request, res: Response): Promise<void> => {
 	const userId = parseInt(req.params.id);
 	try {
-		const user = await prisma.findUnique({
+		const user = await prisma.user.findUnique({
 			where: {
 				id: userId,
 			},
@@ -76,7 +76,7 @@ export const updateUser = async (req: Request, res: Response): Promise<void> => 
 			dataToUpdate.password = await hashPassword(dataToUpdate.password);
 		}
 
-		const user = await prisma.update({
+		const user = await prisma.user.update({
 			where: {
 				id: userId,
 			},
@@ -99,7 +99,7 @@ export const updateUser = async (req: Request, res: Response): Promise<void> => 
 export const deleteUser = async (req: Request, res: Response): Promise<void> => {
 	const userId = parseInt(req.params.id);
 	try {
-		await prisma.delete({
+		await prisma.user.delete({
 			where: {
 				id: userId,
 			},
