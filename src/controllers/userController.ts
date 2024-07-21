@@ -1,18 +1,19 @@
 import { Request, Response } from 'express';
 import { hashPassword } from '../services/password.service';
 import prisma from '../models/user';
+import { createUserSchema, updateUserSchema } from '../schemas/user.schema';
 
 export const createUser = async (req: Request, res: Response): Promise<void> => {
+	const parseResult = createUserSchema.safeParse(req.body);
+
+	if (!parseResult.success) {
+		res.status(400).json({ errors: parseResult.error.errors });
+		return;
+	}
+
+	const { email, password } = parseResult.data;
+
 	try {
-		const { email, password } = req.body;
-		if (!email) {
-			res.status(400).json({ message: 'Field email is required' });
-			return;
-		}
-		if (!password) {
-			res.status(400).json({ message: 'Field password is required' });
-			return;
-		}
 		const hashedPassword = await hashPassword(password);
 		const user = await prisma.create({
 			data: {
@@ -61,17 +62,18 @@ export const getUserById = async (req: Request, res: Response): Promise<void> =>
 
 export const updateUser = async (req: Request, res: Response): Promise<void> => {
 	const userId = parseInt(req.params.id);
-	const { email, password } = req.body;
+	const parseResult = updateUserSchema.safeParse(req.body);
+
+	if (!parseResult.success) {
+		res.status(400).json({ errors: parseResult.error.errors });
+		return;
+	}
+
+	const dataToUpdate = parseResult.data;
+
 	try {
-		let dataToUpdate: any = { ...req.body };
-
-		if (password) {
-			const hashedPassword = await hashPassword(password);
-			dataToUpdate.password = hashedPassword;
-		}
-
-		if (email) {
-			dataToUpdate.email = email;
+		if (dataToUpdate.password) {
+			dataToUpdate.password = await hashPassword(dataToUpdate.password);
 		}
 
 		const user = await prisma.update({

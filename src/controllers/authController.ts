@@ -1,25 +1,23 @@
 import { Request, Response } from 'express';
 import { comparePassword, hashPassword } from '../services/password.service';
 import { generateJwt } from '../services/auth.service';
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import prisma from '../models/user';
+import { registerSchema, loginSchema } from '../schemas/auth.schema';
 
 export const register = async (req: Request, res: Response): Promise<void> => {
-	const { email, password } = req.body;
+	const parseResult = registerSchema.safeParse(req.body);
+
+	if (!parseResult.success) {
+		res.status(400).json({ errors: parseResult.error.errors });
+		return;
+	}
+
+	const { email, password } = parseResult.data;
 
 	try {
-		if (!email) {
-			res.status(400).json({ message: 'Field email is required' });
-			return;
-		}
-		if (!password) {
-			res.status(400).json({ message: 'Field password is required' });
-			return;
-		}
 		const hashedPassword = await hashPassword(password);
 
-		const user = await prisma.user.create({
+		const user = await prisma.create({
 			data: {
 				email,
 				password: hashedPassword,
@@ -39,19 +37,17 @@ export const register = async (req: Request, res: Response): Promise<void> => {
 };
 
 export const login = async (req: Request, res: Response): Promise<void> => {
-	const { email, password } = req.body;
+	const parseResult = loginSchema.safeParse(req.body);
+
+	if (!parseResult.success) {
+		res.status(400).json({ errors: parseResult.error.errors });
+		return;
+	}
+
+	const { email, password } = parseResult.data;
 
 	try {
-		if (!email) {
-			res.status(400).json({ message: 'Field email is required' });
-			return;
-		}
-		if (!password) {
-			res.status(400).json({ message: 'Field password is required' });
-			return;
-		}
-
-		const user = await prisma.user.findUnique({ where: { email } });
+		const user = await prisma.findUnique({ where: { email } });
 		if (!user) {
 			res.status(404).json({ error: 'User not found' });
 			return;
