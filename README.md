@@ -1,6 +1,10 @@
 # ts-node-prisma-jwt-api
 
-This is a RESTful API project built with TypeScript, Express, Prisma, and JWT for authentication. It uses PostgreSQL as the database and Supabase for database management and hosting.
+This is a RESTful API project developed using TypeScript, Express, Prisma, and JWT for authentication. It utilizes PostgreSQL for the database, managed by Supabase, and is hosted on Render.
+
+## Live Demo
+
+You can access the live API at [https://ts-node-prisma-jwt-api.onrender.com](https://ts-node-prisma-jwt-api.onrender.com).
 
 ## Description
 
@@ -12,24 +16,24 @@ The project has the following structure:
 
 -   `src/`
     -   `controllers/`
-        -   `authController.ts` - Handles user authentication logic
-        -   `userController.ts` - Handles user management logic
+        -   `authController.ts`
+        -   `userController.ts`
     -   `models/`
-        -   `jwt.interface.ts` - Interfaces for JWT payload
-        -   `user.interface.ts` - Interfaces for user model
-        -   `user.ts` - Prisma model for users
+        -   `jwt.interface.ts`
+        -   `user.interface.ts`
+        -   `user.ts`
     -   `routes/`
-        -   `authRoutes.ts` - Routes for authentication
-        -   `userRoutes.ts` - Routes for user management
+        -   `authRoutes.ts`
+        -   `userRoutes.ts`
     -   `schemas/`
-        -   `auth.schema.ts` - Validation schemas for authentication
-        -   `user.schema.ts` - Validation schemas for user management
+        -   `auth.schema.ts`
+        -   `user.schema.ts`
     -   `services/`
-        -   `auth.service.ts` - Services for authentication and JWT generation
-        -   `password.service.ts` - Services for password handling
-    -   `app.ts` - Main application configuration
-    -   `prisma.d.ts` - Prisma definitions
-    -   `server.ts` - Server setup and application startup
+        -   `auth.service.ts`
+        -   `password.service.ts`
+    -   `app.ts`
+    -   `prisma.d.ts`
+    -   `server.ts`
 
 ## Installation
 
@@ -50,10 +54,12 @@ To set up the project locally, follow these steps:
 
 3. **Configure environment variables:**
 
+    Create a `.env` file in the root directory and add the following configuration:
+
     ```env
     DATABASE_URL=postgresql://user:password@host:port/database
-    JWT_SECRET=
-    PORT=
+    JWT_SECRET=your_jwt_secret
+    PORT=your_port
     ```
 
 ## Usage
