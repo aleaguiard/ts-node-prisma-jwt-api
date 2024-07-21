@@ -6,11 +6,11 @@ export const createUser = async (req: Request, res: Response): Promise<void> => 
 	try {
 		const { email, password } = req.body;
 		if (!email) {
-			res.status(400).json({ message: 'El email es obligatorio' });
+			res.status(400).json({ message: 'Field email is required' });
 			return;
 		}
 		if (!password) {
-			res.status(400).json({ message: 'El password es obligatorio' });
+			res.status(400).json({ message: 'Field password is required' });
 			return;
 		}
 		const hashedPassword = await hashPassword(password);
@@ -23,10 +23,10 @@ export const createUser = async (req: Request, res: Response): Promise<void> => 
 		res.status(201).json(user);
 	} catch (error: any) {
 		if (error?.code === 'P2002' && error?.meta?.target?.includes('email')) {
-			res.status(400).json({ message: 'El mail ingresado ya existe' });
+			res.status(400).json({ message: 'Email already exists' });
 		}
 		console.log(error);
-		res.status(500).json({ error: 'Hubo un error, pruebe más tarde' });
+		res.status(500).json({ error: 'There was an error, try again later' });
 	}
 };
 
@@ -36,7 +36,7 @@ export const getAllUsers = async (req: Request, res: Response): Promise<void> =>
 		res.status(200).json(users);
 	} catch (error: any) {
 		console.log(error);
-		res.status(500).json({ error: 'Hubo un error, pruebe más tarde' });
+		res.status(500).json({ error: 'There was an error, try again later' });
 	}
 };
 
@@ -49,13 +49,13 @@ export const getUserById = async (req: Request, res: Response): Promise<void> =>
 			},
 		});
 		if (!user) {
-			res.status(404).json({ error: 'El usuario no fue encontrado' });
+			res.status(404).json({ error: 'User not found' });
 			return;
 		}
 		res.status(200).json(user);
 	} catch (error: any) {
 		console.log(error);
-		res.status(500).json({ error: 'Hubo un error, pruebe más tarde' });
+		res.status(500).json({ error: 'There was an error, try again later' });
 	}
 };
 
@@ -84,12 +84,12 @@ export const updateUser = async (req: Request, res: Response): Promise<void> => 
 		res.status(200).json(user);
 	} catch (error: any) {
 		if (error?.code === 'P2002' && error?.meta?.target?.includes('email')) {
-			res.status(400).json({ error: 'El email ingresado ya existe' });
+			res.status(400).json({ error: 'Email already exists' });
 		} else if (error?.code == 'P2025') {
-			res.status(404).json('Usuario no encontrado');
+			res.status(404).json('User not found');
 		} else {
 			console.log(error);
-			res.status(500).json({ error: 'Hubo un error, pruebe más tarde' });
+			res.status(500).json({ error: 'There was an error, try again later' });
 		}
 	}
 };
@@ -105,15 +105,15 @@ export const deleteUser = async (req: Request, res: Response): Promise<void> => 
 
 		res.status(200)
 			.json({
-				message: `El usuario ${userId} ha sido eliminado`,
+				message: `User ${userId} has been deleted`,
 			})
 			.end();
 	} catch (error: any) {
 		if (error?.code == 'P2025') {
-			res.status(404).json('Usuario no encontrado');
+			res.status(404).json('User not found');
 		} else {
 			console.log(error);
-			res.status(500).json({ error: 'Hubo un error, pruebe más tarde' });
+			res.status(500).json({ error: 'There was an error, try again later' });
 		}
 	}
 };
