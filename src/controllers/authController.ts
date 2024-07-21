@@ -17,7 +17,7 @@ export const register = async (req: Request, res: Response): Promise<void> => {
 		}
 		const hashedPassword = await hashPassword(password);
 
-		const user = await prisma.create({
+		const user = await (prisma as any).user.create({
 			data: {
 				email,
 				password: hashedPassword,
@@ -27,12 +27,12 @@ export const register = async (req: Request, res: Response): Promise<void> => {
 		const token = generateJwt(user);
 		res.status(201).json({ token });
 	} catch (error: any) {
+		console.error('Error en el registro:', error);
 		if (error?.code === 'P2002' && error?.meta?.target?.includes('email')) {
 			res.status(400).json({ message: 'El mail ingresado ya existe' });
+		} else {
+			res.status(500).json({ error: 'Hubo un error en el registro' });
 		}
-
-		console.log(error);
-		res.status(500).json({ error: 'Hubo un error en el registro' });
 	}
 };
 
